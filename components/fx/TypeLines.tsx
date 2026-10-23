@@ -40,7 +40,7 @@ export function TypeLines({ lines, prompt = "> ", speed = 28, lineDelay = 250, c
         setDisplayed([...out]);
         const ch = target[charIdx - 1];
         let wait = speed + (Math.random() * 16 - 8);
-        if (".!?,;:".includes(ch)) wait += 100;
+        if (".!?,;:".includes(ch)) wait += 40;
         setTimeout(step, Math.max(8, wait));
       } else {
         lineIdx++;

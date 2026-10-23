@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import { projects, type Project, type ProjectStatus } from "@/data/projects";
 import { cn } from "@/lib/utils";
-import { TypeWriter } from "@/components/fx/TypeWriter";
 import { ScrambleText } from "@/components/fx/ScrambleText";
 
 const FILTERS: Array<"ALL" | ProjectStatus> = ["ALL", "DEPLOYED", "OPEN_SOURCE", "ARCHIVED"];
@@ -82,7 +81,7 @@ function ProjectCard({
       aria-label={`Open dossier for ${project.name}`}
       onClick={() => onOpen(project)}
       onKeyDown={onKeyDown}
-      className="group relative border border-red-deep bg-panel/60 backdrop-blur-sm chamfer p-0 cursor-pointer focus:outline focus:outline-2 focus:outline-cyan hover:border-cyan hover:-translate-y-1 transition-all rgb-split"
+      className="group relative border border-red-deep bg-panel/60 backdrop-blur-sm chamfer p-0 cursor-pointer focus:outline focus:outline-2 focus:outline-cyan hover:border-cyan hover:-translate-y-1 transition-all"
     >
       {/* image / placeholder */}
       <div className="relative h-40 overflow-hidden border-b border-border bg-bg-2">
@@ -117,7 +116,7 @@ function ProjectCard({
         </div>
         <h3 className="mt-3 text-lg tracking-widest text-cyan neon-cyan uppercase">{name}</h3>
         <p className="mt-2 text-sm text-text-dim leading-relaxed min-h-[3rem]">
-          <TypeWriter text={project.description} speed={12} trigger="hover" keepCursor={false} />
+          {project.description}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((t, i) => (

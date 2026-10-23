@@ -1,8 +1,14 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 
 export function CRTOverlay() {
   const reduced = useReducedMotion();
+  const pathname = usePathname();
+
+  // Home is intentionally clean: no noise, no CRT scanline layer.
+  if (pathname === "/") return null;
+
   return (
     <>
       <div className="noise" aria-hidden style={{ opacity: 0.04 }} />

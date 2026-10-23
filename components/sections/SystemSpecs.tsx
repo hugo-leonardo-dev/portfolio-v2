@@ -18,7 +18,7 @@ export function SystemSpecs() {
   let chipIndex = 0;
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      <HudFrame label="SYSTEM_SPECS">
+      <HudFrame>
         <div className="space-y-4">
           {groups.map((g) => (
             <div key={g.key}>
@@ -37,7 +37,7 @@ export function SystemSpecs() {
           ))}
         </div>
       </HudFrame>
-      <HudFrame label="LANGUAGE_PACK">
+      <HudFrame>
         <div className="space-y-3">
           {languages.map((l, idx) => (
             <div key={l.name} className="space-y-1">

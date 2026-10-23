@@ -30,7 +30,7 @@ export const projects: Project[] = [
     tags: ["React", "Next.js", "Supabase", "Tailwind CSS"],
     status: "DEPLOYED",
     liveUrl: "https://tony-mendes.vercel.app/",
-    image: "/projects/motion-design.png",
+    image: "/projects/motion-design.jpeg",
   },
   {
     id: "PRJ_003",
@@ -40,19 +40,21 @@ export const projects: Project[] = [
     tags: ["React"],
     status: "DEPLOYED",
     liveUrl: "https://whatsweb-hugoleonardo.vercel.app",
-    image: "/projects/whatsweb.png",
+    image: "/projects/whatsweb.jpeg",
   },
   {
     id: "PRJ_004",
     name: "PetzFinder",
-    description: "Pet tracking system with QR Code generation; evolved into a university extension project (2023-2024).",
+    description:
+      "Pet tracking system with QR Code generation; evolved into a university extension project (2023-2024).",
     tags: ["Node.js", "React.js", "AWS Lambda", "QR Code"],
     status: "ARCHIVED",
   },
   {
     id: "PRJ_005",
     name: "PedeFácil",
-    description: "Conversational chatbot that automates menus and PIX payments, speeding up checkout by 3x (2023).",
+    description:
+      "Conversational chatbot that automates menus and PIX payments, speeding up checkout by 3x (2023).",
     tags: ["N8N", "Z-Pro", "Node.js", "WhatsApp API"],
     status: "ARCHIVED",
   },

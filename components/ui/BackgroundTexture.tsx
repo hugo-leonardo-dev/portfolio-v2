@@ -1,6 +1,14 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { japaneseTexture } from "@/lib/data";
 
 export function BackgroundTexture() {
+  const pathname = usePathname();
+
+  // Home is kept free of background texture interference.
+  if (pathname === "/") return null;
+
   return (
     <div
       aria-hidden

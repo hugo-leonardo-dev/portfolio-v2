@@ -15,23 +15,26 @@ export function Logs() {
 
   return (
     <section className="space-y-6">
-      <div className="text-[10px] text-text-dim tracking-widest">
-        <ScrambleText text="NODE_03 // LOGS" trigger="mount" />
-      </div>
       <div className="space-y-4">
         {experiences.map((e) => {
           const isOpen = open === e.id;
           return (
-            <HudFrame key={e.id} label={e.id}>
+            <HudFrame key={e.id}>
               <button
                 onClick={() => setOpen(isOpen ? null : e.id)}
                 className="w-full flex flex-wrap items-center justify-between gap-2 text-left"
                 aria-expanded={isOpen}
               >
                 <span className="text-cyan tracking-widest text-sm">
-                  <TypeWriter text={`${e.id} // ${e.company.toUpperCase()} // ${e.period}`} speed={20} keepCursor={false} />
+                  <TypeWriter
+                    text={`${e.id} // ${e.company.toUpperCase()} // ${e.period}`}
+                    speed={10}
+                    keepCursor={false}
+                  />
                 </span>
-                <StatusTag color={isOpen ? "cyan" : "dim"}>{isOpen ? "OPEN" : "CLOSED"}</StatusTag>
+                <StatusTag color={isOpen ? "cyan" : "dim"}>
+                  {isOpen ? "OPEN" : "CLOSED"}
+                </StatusTag>
               </button>
               <AnimatePresence initial={false}>
                 {isOpen && (
@@ -47,7 +50,12 @@ export function Logs() {
                         {e.role.toUpperCase()} @ {e.location.toUpperCase()}
                       </div>
                       <div className="text-sm text-text">
-                        <TypeLines lines={e.bullets} prompt="> " speed={16} lineDelay={120} />
+                        <TypeLines
+                          lines={e.bullets}
+                          prompt="> "
+                          speed={7}
+                          lineDelay={60}
+                        />
                       </div>
                     </div>
                   </motion.div>

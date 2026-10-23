@@ -24,7 +24,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: reduced ? 0 : 0.12, ease: "easeOut" }}
-        className={reduced ? "" : "glitch-in"}
       >
         {children}
       </motion.div>

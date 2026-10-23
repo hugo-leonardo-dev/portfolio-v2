@@ -1,13 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { commands } from "@/lib/data";
-import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 
 const ALL = ["help", "about", "skills", "projects", "experience", "contact", "clear", "whoami", "sudo", "matrix", "ls", "cat"];
 
+/**
+ * Inline terminal used by the home prompt line.
+ * Keeps the command set, history (↑/↓) and Tab completion from the old
+ * floating terminal, but renders directly on the page.
+ */
 export function Terminal() {
-  const reduced = useReducedMotion();
-  const [open, setOpen] = useState(false);
   const [lines, setLines] = useState<string[]>([
     "HUGO_OS v1.0.0 // type 'help' for commands",
   ]);
@@ -18,12 +20,8 @@ export function Terminal() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
-
-  useEffect(() => {
     scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
-  }, [lines, open]);
+  }, [lines]);
 
   const run = (cmd: string) => {
     const trimmed = cmd.trim().toLowerCase();
@@ -84,44 +82,41 @@ export function Terminal() {
       const match = ALL.find((c) => c.startsWith(input.toLowerCase()));
       if (match) setInput(match);
     } else if (e.key === "Escape") {
-      setOpen(false);
+      inputRef.current?.blur();
     }
   };
 
   return (
-    <>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-4 right-4 z-40 border border-accent text-accent px-3 py-2 text-xs tracking-widest bg-bg/80 backdrop-blur-md chamfer-sm hover:bg-accent hover:text-bg"
-        aria-label="Toggle terminal"
+    <section
+      className="border border-red-deep/60 bg-[rgba(10,17,24,0.55)] chamfer-sm"
+      onClick={() => inputRef.current?.focus()}
+    >
+      <div
+        ref={scrollRef}
+        className="max-h-48 overflow-y-auto px-3 py-2 font-mono text-[11px] leading-relaxed space-y-0.5"
       >
-        [ TERMINAL ]
-      </button>
-      {open && (
-        <div className="fixed bottom-16 right-4 z-40 w-[92vw] max-w-md border border-border bg-bg/95 backdrop-blur-md chamfer">
-          <div className="flex items-center justify-between border-b border-border px-3 py-2">
-            <span className="text-accent text-xs tracking-widest">HUGO_OS // TERMINAL</span>
-            <button onClick={() => setOpen(false)} className="text-danger text-xs">[X]</button>
+        {lines.map((l, i) => (
+          <div key={i} className={l.startsWith(">") ? "text-cyan" : "text-text"}>
+            {l}
           </div>
-          <div ref={scrollRef} className="h-64 overflow-y-auto px-3 py-2 text-xs space-y-1">
-            {lines.map((l, i) => (
-              <div key={i} className={l.startsWith(">") ? "text-accent" : "text-fg"}>{l}</div>
-            ))}
-          </div>
-          <div className="border-t border-border px-3 py-2 flex items-center gap-2">
-            <span className="text-accent">&gt;</span>
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              className="flex-1 bg-transparent text-fg text-xs outline-none"
-              placeholder="type a command..."
-              aria-label="Terminal input"
-            />
-          </div>
-        </div>
-      )}
-    </>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2 border-t border-red-deep/40 px-3 py-2 font-mono text-[11px]">
+        <span className="whitespace-nowrap text-red">ROOT@HUGO : ~ #</span>
+        <input
+          ref={inputRef}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          className="min-w-0 flex-1 bg-transparent text-cyan outline-none caret-cyan placeholder:text-text-dim"
+          placeholder="type a command..."
+          aria-label="Terminal input"
+          autoComplete="off"
+          spellCheck={false}
+        />
+        <span className="cursor-blink text-cyan" aria-hidden>█</span>
+      </div>
+    </section>
   );
 }

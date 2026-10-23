@@ -36,9 +36,11 @@ export function ProgressStrip({
       <span className="text-cyan-dim">{label}</span>
       <div className="relative h-1.5 flex-1 bg-panel border border-red-deep overflow-hidden">
         <div
-          className="h-full bg-cyan transition-[width] duration-75"
+          className="relative h-full bg-cyan transition-[width] duration-75 overflow-hidden"
           style={{ width: `${value}%` }}
-        />
+        >
+          {value > 0 && <span className="bar-shimmer" aria-hidden />}
+        </div>
       </div>
       <span className="text-cyan">{done ? "ACCESS GRANTED" : `${value}%`}</span>
     </div>

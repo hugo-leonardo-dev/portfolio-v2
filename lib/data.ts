@@ -28,16 +28,18 @@ export const bootLines = [
 ];
 
 export const manifesto = [
-  "> I am a full-stack software engineer who treats code like circuitry:",
-  "> clean interfaces, resilient backends, and systems that survive the noise.",
+  "> I'm a full-stack developer who likes building things",
+  "> and figuring out how they work.",
   ">",
-  "> I build payment rails, telemetry dashboards, and automation that ships.",
-  "> From ASP.NET to AdonisJS, from React to real-time WebSockets,",
-  "> I move across the stack without losing the signal.",
+  "> I work with React, TypeScript, Node.js, and .NET,",
+  "> moving between frontend, backend, and whatever else",
+  "> the project needs.",
   ">",
-  "> Currently open to new contracts and collaborations.",
+  "> I enjoy solving problems, learning new tools,",
+  "> and turning ideas into software people can actually use.",
+  ">",
+  "> Open to freelance work and good projects.",
 ];
-
 export const systemSpecs = {
   languages: ["JavaScript", "TypeScript", "C#", "Node.js", "SQL"],
   frameworks: [
@@ -62,7 +64,14 @@ export const systemSpecs = {
     "GraphQL",
     "N8N",
   ],
-  practices: ["Jest", "Microservices", "Distributed systems", "OOP", "MVC", "Clean code"],
+  practices: [
+    "Jest",
+    "Microservices",
+    "Distributed systems",
+    "OOP",
+    "MVC",
+    "Clean code",
+  ],
 };
 
 export const languages = [
@@ -78,7 +87,8 @@ export const education = {
   award: "Academic Excellence Award",
 };
 
-export const mentoring = "Computer Science Tutor at UNP (Data Structures, Algorithms, OOP, Software Engineering).";
+export const mentoring =
+  "Computer Science Tutor at UNP (Data Structures, Algorithms, OOP, Software Engineering).";
 
 export const experiences = [
   {
@@ -88,9 +98,10 @@ export const experiences = [
     role: "Software Engineer",
     period: "09/2025 - 03/2026",
     bullets: [
-      "Built payment/checkout APIs with resilient microservice communication (AdonisJS, PostgreSQL).",
-      "Delivered React dashboards and background workers for a financial SaaS.",
-      "Set up CI/CD pipelines with GitHub Actions and Docker.",
+      "Developed payment and checkout APIs with AdonisJS and PostgreSQL, working on the backend logic behind financial transactions and checkout flows.",
+      "Built React dashboards for the financial SaaS, connecting frontend components to backend services and making application data easier to access and manage.",
+      "Worked on background workers to handle tasks outside the main request flow, helping keep application operations organized and responsive.",
+      "Set up CI/CD pipelines with GitHub Actions and Docker to automate build and deployment steps and make releases easier to manage.",
     ],
   },
   {
@@ -100,22 +111,25 @@ export const experiences = [
     role: "Software Engineer",
     period: "09/2024 - 09/2025",
     bullets: [
-      "Led the insurance module end-to-end with AI validation and AWS S3.",
-      "Built real-time telemetry dashboards (React, Zustand, Chart.js, Flespi API).",
-      "Implemented WebSocket notifications with Node.js.",
-      "Deployed ChatGPT + N8N chatbots reducing support load.",
+      "Developed the insurance module, working across the feature from its backend logic to its integration with the rest of the platform. Added AI-based validation and AWS S3 for file storage.",
+      "Built real-time vehicle telemetry dashboards with React, Zustand, Chart.js, and the Flespi API, turning incoming tracking data into information users could follow through the interface.",
+      "Implemented WebSocket notifications with Node.js so the application could deliver updates in real time without relying on users to refresh the page.",
+      "Integrated ChatGPT with n8n to automate customer support conversations, handling parts of the support workflow that would otherwise require manual work.",
+      "Worked across frontend and backend features, connecting APIs, external services, and user-facing interfaces as new functionality was added to the platform.",
     ],
   },
   {
     id: "LOG_001",
     company: "ELITE Consultores",
     location: "Brazil",
-    role: "Backend Development Engineer",
+    role: "Backend Developer",
     period: "07/2022 - 10/2022",
     bullets: [
-      "Refactored core system (ASP.NET MVC, MySQL) cutting processing time by 65%.",
-      "Eliminated 90% of data-entry errors.",
-      "Built REST APIs with C#/.NET, JWT authentication, and Hangfire background jobs.",
+      "Worked on an existing ASP.NET MVC application backed by MySQL, refactoring parts of the system to improve performance and reduce processing time by 65%.",
+      "Improved data handling and validation in the application, helping reduce data-entry errors by 90% and making everyday operations more reliable.",
+      "Developed REST APIs with C# and .NET to support communication between application components and expose backend functionality to other parts of the system.",
+      "Implemented JWT-based authentication to protect API endpoints and manage authenticated requests.",
+      "Used Hangfire to schedule and run background jobs, moving time-consuming tasks away from the main request flow.",
     ],
   },
 ];
@@ -143,8 +157,10 @@ export const projects = [
 
 export const commands = {
   help: "Available commands: help, about, skills, projects, experience, contact, clear, whoami, sudo",
-  about: "Full-Stack Software Engineer. Building resilient systems at the edge of the net.",
-  skills: "JS, TS, C#, Node.js, SQL | React, Next.js, AngularJS, AdonisJS, ASP.NET | Postgres, MySQL, Redis, Mongo, AWS, Docker",
+  about:
+    "Full-Stack Software Engineer. Building resilient systems at the edge of the net.",
+  skills:
+    "JS, TS, C#, Node.js, SQL | React, Next.js, AngularJS, AdonisJS, ASP.NET | Postgres, MySQL, Redis, Mongo, AWS, Docker",
   projects: "PetzFinder, PedeF\u00e1cil",
   experience: "CORELAB BR, COMIGO Rastreamento, ELITE Consultores",
   contact: "hugoleonardopflorencio@gmail.com",
@@ -152,4 +168,5 @@ export const commands = {
   sudo: "ACCESS DENIED. NICE TRY, NETRUNNER.",
 };
 
-export const japaneseTexture = "\u30B7\u30B9\u30C6\u30E0\u30AA\u30F3\u30E9\u30A4\u30F3 // \u30C7\u30FC\u30BF\u30B9\u30C8\u30EA\u30FC\u30E0 // \u30CD\u30C3\u30C8\u30E9\u30F3\u30CA\u30FC";
+export const japaneseTexture =
+  "\u30B7\u30B9\u30C6\u30E0\u30AA\u30F3\u30E9\u30A4\u30F3 // \u30C7\u30FC\u30BF\u30B9\u30C8\u30EA\u30FC\u30E0 // \u30CD\u30C3\u30C8\u30E9\u30F3\u30CA\u30FC";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useInView } from "@/hooks/useInView";
 
@@ -14,6 +14,12 @@ type Props = {
   as?: React.ElementType;
   className?: string;
   trigger?: "inView" | "mount" | "hover";
+  /**
+   * Renders the typed text in normal flow instead of the hidden clone +
+   * absolute overlay. Use it for headings that may wrap: the line height then
+   * grows with the text instead of overprinting the next element.
+   */
+  flow?: boolean;
 };
 
 export function TypeWriter({
@@ -26,59 +32,82 @@ export function TypeWriter({
   as: Tag = "span",
   className,
   trigger = "inView",
+  flow = false,
 }: Props) {
   const reduced = useReducedMotion();
   const { ref, inView } = useInView<HTMLSpanElement>({ threshold: 0.15 });
-  const [displayed, setDisplayed] = useState(reduced ? text : "");
-  const [done, setDone] = useState(reduced);
-  const ran = useRef(false);
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  // Keeps the timer of the current run so a new run (or StrictMode's cleanup)
+  // can cancel it instead of leaving a stale typing loop behind.
+  const cancelRef = useRef<(() => void) | null>(null);
+  const onDoneRef = useRef(onDone);
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
-  const run = () => {
-    if (reduced || ran.current) return;
-    ran.current = true;
+  const run = useCallback(() => {
+    if (reduced) return;
+    cancelRef.current?.();
+
     let i = 0;
     let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+
     const step = () => {
       if (cancelled) return;
       if (i >= text.length) {
         setDone(true);
-        onDone?.();
+        onDoneRef.current?.();
         return;
       }
       i++;
       setDisplayed(text.slice(0, i));
       const ch = text[i - 1];
       let wait = speed + (Math.random() * 20 - 10);
-      if (ch === "\n") wait += 200;
-      else if (".!?,;:".includes(ch)) wait += 120;
-      setTimeout(step, Math.max(8, wait));
+      if (ch === "\n") wait += 100;
+      else if (".!?,;:".includes(ch)) wait += 60;
+      timer = setTimeout(step, Math.max(8, wait));
     };
-    const t = setTimeout(step, delay);
-    return () => {
+
+    timer = setTimeout(step, delay);
+
+    const cancel = () => {
       cancelled = true;
-      clearTimeout(t);
+      clearTimeout(timer);
     };
-  };
+    cancelRef.current = cancel;
+    return cancel;
+  }, [delay, reduced, speed, text]);
 
   useEffect(() => {
     if (reduced) {
-      setDisplayed(text);
-      setDone(true);
+      cancelRef.current?.();
       return;
     }
-    if (trigger === "mount") {
-      const cleanup = run();
-      return cleanup;
+    if (trigger === "mount" || (trigger === "inView" && inView)) {
+      return run();
     }
-    if (trigger === "inView" && inView) {
-      const cleanup = run();
-      return cleanup;
-    }
-  }, [inView, reduced, text, speed, delay, onDone, trigger]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inView, reduced, run, trigger]);
+
+  // Cancel any pending typing when the component unmounts.
+  useEffect(() => () => cancelRef.current?.(), []);
 
   const handleEnter = () => {
     if (trigger === "hover") run();
   };
+
+  const shown = reduced ? text : displayed;
+  const cursorNode = (!done || keepCursor) && <span className="cursor-blink text-cyan">{cursor}</span>;
+
+  if (flow) {
+    return (
+      <Tag ref={ref} className={className} onMouseEnter={handleEnter}>
+        {shown}
+        {cursorNode}
+      </Tag>
+    );
+  }
 
   return (
     <Tag ref={ref} className={className} style={{ position: "relative", display: "inline-block" }} onMouseEnter={handleEnter}>
@@ -87,8 +116,8 @@ export function TypeWriter({
         {text}
       </span>
       <span aria-hidden="true" style={{ position: "absolute", inset: 0 }}>
-        {displayed}
-        {(!done || keepCursor) && <span className="cursor-blink text-cyan">{cursor}</span>}
+        {shown}
+        {cursorNode}
       </span>
     </Tag>
   );

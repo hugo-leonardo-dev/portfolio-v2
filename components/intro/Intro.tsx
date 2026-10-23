@@ -21,7 +21,7 @@ const INTRO = {
     { type: "pause", ms: 250 },
     { type: "print", text: "> VERIFYING CREDENTIALS ......... [ OK ]", delay: 60, status: "ok" },
     { type: "print", text: "> BIOMETRIC TOKEN ............... [ OK ]", delay: 80, status: "ok" },
-    { type: "print", text: "> BYPASSING ICE ................. [ WARN ]", delay: 80, status: "warn", glitch: "medium", trace: 64, ice: true },
+    { type: "print", text: "> BYPASSING ICE ................. [ WARN ]", delay: 80, status: "warn", trace: 64, ice: true },
     { type: "print", text: "> TRACE ROUTE SPOOFED ........... [ OK ]", delay: 90, status: "ok", trace: 12, ice: false },
     { type: "print", text: "> ACCESS LEVEL: ROOT", delay: 80, status: "ok" },
     { type: "print", text: "> WELCOME BACK, HUGO_LEONARDO", delay: 90, status: "ok" },
@@ -56,7 +56,7 @@ const INTRO = {
     { type: "print", text: "> ELEVATING PRIVILEGES ........ [ OK ]", delay: 60, status: "ok" },
     { type: "print", text: "> DECRYPTING INTERFACE ........ [██████████] 100%", delay: 80, status: "ok" },
     { type: "print", text: "> RENDERING NODE_07 ........... [ OK ]", delay: 80, status: "ok" },
-    { type: "print", text: "> ACCESS GRANTED", delay: 90, status: "ok", glitch: "high", flash: true },
+    { type: "print", text: "> ACCESS GRANTED", delay: 90, status: "ok" },
     { type: "pause", ms: 400 },
     // PHASE 4 HANDOFF
     { type: "handoff" },
@@ -154,10 +154,6 @@ export default function Intro({ onDone }: { onDone: () => void }) {
             if (s.status) {
               // flash status already in text
             }
-            if (s.glitch) {
-              termRef.current?.parentElement?.classList.add("glitch-burst");
-              setTimeout(() => termRef.current?.parentElement?.classList.remove("glitch-burst"), 200);
-            }
             if (s.trace !== undefined && traceRef.current) {
               traceRef.current.style.width = s.trace + "%";
               if (tracePctRef.current) tracePctRef.current.textContent = `TRACE: ${s.trace}%`;
@@ -204,6 +200,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const runExit = (dur = 250) => {
     if (exiting) return;
     setExiting(true);
+    // Reveal the page under the fading overlay so it doesn't pop in (and jump)
+    // when the intro unmounts.
+    document.documentElement.classList.remove("intro-pending");
+    window.dispatchEvent(new Event("intro:done"));
     if (rootRef.current) {
       rootRef.current.style.transition = "opacity 0.25s ease";
       rootRef.current.style.opacity = "0";

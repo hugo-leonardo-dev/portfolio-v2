@@ -74,9 +74,8 @@ export function Glitch({
   };
   const handleClick = () => {
     if (reduced) return;
+    // Element-level glitch only; the page itself never shakes.
     fire("slice", 200);
-    document.body.classList.add("shake");
-    setTimeout(() => document.body.classList.remove("shake"), 200);
   };
 
   const effectClass = active ? `glitch-${effect}` : "";

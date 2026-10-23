@@ -10,16 +10,18 @@ export function Manifesto() {
   const reduced = useReducedMotion();
   return (
     <section className="space-y-6">
-      <div className="text-[10px] text-text-dim tracking-widest">
-        <ScrambleText text="NODE_02 // MANIFESTO" trigger="mount" />
-      </div>
-      <HudFrame label="MANIFESTO">
+      <HudFrame>
         <div className="space-y-1 text-sm">
-          <TypeLines lines={manifesto} prompt="" speed={18} />
+          <TypeLines lines={manifesto} prompt="" speed={6} lineDelay={60} />
         </div>
         <div className="mt-4 border-t border-red-deep/40 pt-3 text-[10px] text-text-dim space-y-1">
-          <div>EDUCATION: {education.degree} // {education.school} // {education.period}</div>
-          <div>GPA: {education.gpa} // {education.award}</div>
+          <div>
+            EDUCATION: {education.degree} // {education.school} //{" "}
+            {education.period}
+          </div>
+          <div>
+            GPA: {education.gpa} // {education.award}
+          </div>
           <div>MENTORING: {mentoring}</div>
         </div>
         <div className="mt-3">
