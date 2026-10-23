@@ -1,69 +1,128 @@
-import Image from "next/image";
+"use client";
+import { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
+import { BootSequence } from "@/components/sections/BootSequence";
+import { Button } from "@/components/ui/Button";
+import { Marquee } from "@/components/ui/Marquee";
+import { Terminal } from "@/components/terminal/Terminal";
+import { site } from "@/lib/data";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { HudFrame } from "@/components/hud/HudFrame";
+import { SegmentedBar } from "@/components/hud/SegmentedBar";
+import { BinaryText } from "@/components/hud/BinaryText";
+import { StatusTag } from "@/components/hud/StatusTag";
+import { ProgressStrip } from "@/components/hud/ProgressStrip";
+import { ScrambleText } from "@/components/fx/ScrambleText";
+import { TypeWriter } from "@/components/fx/TypeWriter";
+import { RotatingTypeWriter } from "@/components/fx/RotatingTypeWriter";
+import { CountUp } from "@/components/fx/CountUp";
 
 export default function Home() {
+  const [booted, setBooted] = useState(false);
+  const reduced = useReducedMotion();
+  const showBoot = !reduced && !booted;
+  const handleBoot = useCallback(() => setBooted(true), []);
+  const [scan, setScan] = useState(0);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("introDone")) { setReady(true); return; }
+      if (document.documentElement.classList.contains("intro-pending")) {
+        const handler = () => setReady(true);
+        window.addEventListener("intro:done", handler, { once: true });
+        return () => window.removeEventListener("intro:done", handler);
+      }
+      setReady(true);
+    } catch {
+      setReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    if (reduced) {
+      setScan(100);
+      return;
+    }
+    const start = performance.now();
+    const dur = 1800;
+    let raf = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / dur);
+      setScan(Math.round(t * 100));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduced, ready]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {showBoot && <BootSequence onComplete={handleBoot} />}
+      {!ready ? (
+        <div className="min-h-screen" />
+      ) : (
+      <div className="space-y-6">
+        <HudFrame label="SCANNING">
+          <div className="text-center space-y-4">
+            <div className="text-cyan text-4xl">▲</div>
+            <h1 className="text-2xl md:text-3xl font-display font-bold tracking-widest text-cyan">
+              <ScrambleText text="WELCOME, NETRUNNER" trigger="inView" />
+            </h1>
+            <p className="text-text font-bold">
+              <RotatingTypeWriter
+                words={["FULL-STACK ENGINEER", "BACKEND ARCHITECT", "AUTOMATION BUILDER", "AI-POWERED SYSTEMS"]}
+                className="text-cyan"
+              />
+            </p>
+            <p className="text-sm text-text-dim">
+              <TypeWriter text={`> ${site.tagline}`} speed={28} keepCursor />
+            </p>
+            <StatusTag color="red">OUTSIDE LINK CONNECTED</StatusTag>
+            <BinaryText rows={1} cols={48} />
+            <SegmentedBar value={scan} />
+            <div className="text-[10px] text-text-dim tracking-widest">
+              LOADING <CountUp to={100} duration={1800} />%
+            </div>
+            <ProgressStrip label="SCANNING" duration={1800} />
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              <motion.div initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }}>
+                <Button href="/projects">[ VIEW_PROJECTS ]</Button>
+              </motion.div>
+              <motion.div initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.4 }}>
+                <Button href="/contact" variant="secondary">[ OPEN_CONNECTION ]</Button>
+              </motion.div>
+            </div>
+          </div>
+        </HudFrame>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <HudFrame label="COMPLETE">
+            <div className="text-cyan font-bold tracking-widest"><ScrambleText text="ACCESS GRANTED" trigger="inView" /></div>
+            <div className="text-[10px] text-text-dim mb-3">SYSTEM ONLINE</div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between"><span className="text-text-dim">YEARS EXP</span><span className="text-cyan"><CountUp to={4} suffix="+" /></span></div>
+              <div className="flex justify-between"><span className="text-text-dim">PROJECTS SHIPPED</span><span className="text-cyan"><CountUp to={6} /></span></div>
+              <div className="flex justify-between"><span className="text-text-dim">STACK COUNT</span><span className="text-cyan"><CountUp to={24} suffix="+" /></span></div>
+            </div>
+            <BinaryText rows={2} cols={28} />
+          </HudFrame>
+          <HudFrame label="STACK">
+            <div className="text-[10px] text-text-dim tracking-widest mb-2"><ScrambleText text="PRIMARY TECH" trigger="inView" /></div>
+            <div className="text-xs text-red space-y-1">
+              <div>JS // TS // C# // NODE.JS // SQL</div>
+              <div>REACT // NEXT.JS // ADONISJS // ASP.NET</div>
+              <div>POSTGRES // MYSQL // REDIS // AWS // DOCKER</div>
+            </div>
+          </HudFrame>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+      )}
+      <Marquee />
+      <div className="px-4 py-2 text-[10px] text-text-dim tracking-widest">
+        ROOT@HUGO : ~ # <span className="cursor-blink text-cyan">█</span>
+      </div>
+      <Terminal />
+    </>
   );
 }
