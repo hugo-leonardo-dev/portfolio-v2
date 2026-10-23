@@ -7,9 +7,9 @@ import { Terminal } from "@/components/terminal/Terminal";
 import { site } from "@/lib/data";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { HudFrame } from "@/components/hud/HudFrame";
-import { SegmentedBar } from "@/components/hud/SegmentedBar";
 import { BinaryText } from "@/components/hud/BinaryText";
 import { StatusTag } from "@/components/hud/StatusTag";
+import { ProgressStrip } from "@/components/hud/ProgressStrip";
 import { RotatingTypeWriter } from "@/components/fx/RotatingTypeWriter";
 import { CountUp } from "@/components/fx/CountUp";
 import { ScrambleReveal } from "@/components/fx/ScrambleReveal";
@@ -25,7 +25,6 @@ const ROLES = [
 
 export default function Home() {
   const reduced = useReducedMotion();
-  const [scan, setScan] = useState(0);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     try {
@@ -55,24 +54,6 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!ready) return;
-    if (reduced) {
-      setScan(100);
-      return;
-    }
-    const start = performance.now();
-    const dur = 1800;
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / dur);
-      setScan(Math.round(t * 100));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [reduced, ready]);
-
   return (
     <>
       {!ready ? (
@@ -99,10 +80,10 @@ export default function Home() {
               <p className="text-sm text-text-dim">&gt; {site.tagline}</p>
               <StatusTag color="red">OUTSIDE LINK CONNECTED</StatusTag>
               <BinaryText rows={1} cols={48} />
-              <SegmentedBar value={scan} />
               <div className="text-[10px] text-text-dim tracking-widest hud-glow">
                 LOADING <CountUp to={100} duration={1800} />%
               </div>
+              <ProgressStrip label="SCANNING" duration={1800} />
               <div className="flex flex-wrap justify-center gap-3 mt-4">
                 <motion.div
                   initial={reduced ? false : { opacity: 0, y: 8 }}
