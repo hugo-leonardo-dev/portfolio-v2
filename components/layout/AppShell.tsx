@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Settings, Menu, X } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Ruler } from "@/components/hud/Ruler";
 import { Barcode } from "@/components/hud/Barcode";
 import { ProgressStrip } from "@/components/hud/ProgressStrip";
@@ -15,18 +15,20 @@ import { Home, User, Briefcase, Folder, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { href: "/", label: "HOME", subtitle: "PROFILE DATA", icon: Home },
-  { href: "/about", label: "ABOUT", subtitle: "MANIFESTO", icon: User },
+  { href: "/", label: "HOME", short: "HOME", subtitle: "PROFILE DATA", icon: Home },
+  { href: "/about", label: "ABOUT", short: "ABOUT", subtitle: "MANIFESTO", icon: User },
   {
     href: "/experience",
     label: "EXPERIENCE",
+    short: "EXP",
     subtitle: "WORK LOGS",
     icon: Briefcase,
   },
-  { href: "/projects", label: "PROJECTS", subtitle: "ARCHIVE", icon: Folder },
+  { href: "/projects", label: "PROJECTS", short: "PROJECTS", subtitle: "ARCHIVE", icon: Folder },
   {
     href: "/contact",
     label: "CONNECTION",
+    short: "CONTACT",
     subtitle: "SECURE CHANNEL",
     icon: Mail,
   },
@@ -45,7 +47,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Home stays crisp: no scanline grid, no ambient sweep, no CRT texture.
   const isHome = pathname === "/";
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [scanlines, setScanlines] = useState(true);
   const [glitch, setGlitch] = useState(true);
   const [animations, setAnimations] = useState(true);
@@ -58,6 +59,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Only persist "anim" after the visitor actually touches the toggle, so the
   // OS preference keeps working until someone makes an explicit choice.
   const animTouched = useRef(false);
+  const settingsPanelRef = useRef<HTMLDivElement>(null);
+  const settingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const active = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -98,6 +101,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       localStorage.setItem("glitch", glitch ? "1" : "0");
     } catch {}
   }, [glitch]);
+
+  // The settings panel is a popover: close it on an outside tap or Escape.
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (
+        settingsPanelRef.current?.contains(target) ||
+        settingsButtonRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setSettingsOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSettingsOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [settingsOpen]);
 
   useEffect(() => {
     const start = Date.now();
@@ -170,75 +197,86 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-[100dvh] flex flex-col">
       {/* top bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-red-deep/60">
-        <span className="text-cyan text-lg font-display tracking-widest">
+      <div className="flex items-center justify-between gap-2 px-4 py-2 border-b border-red-deep/60">
+        <span className="shrink-0 text-cyan text-lg font-display tracking-widest">
           武士
         </span>
-        <div className="flex items-center gap-2">
-          <div className="relative flex items-center">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="relative hidden items-center sm:flex">
             <span className="text-red text-[10px] mr-1">▼</span>
             <Ruler />
           </div>
-          <span className="text-[9px] text-text-dim tracking-widest ml-2">
+          <span className="truncate whitespace-nowrap text-[9px] text-text-dim tracking-widest sm:ml-2">
             {sectionName[pathname] ?? "HOME"}
           </span>
         </div>
-        <button
-          onClick={() => setSettingsOpen((v) => !v)}
-          className="h-8 w-8 border border-cyan bg-panel flex items-center justify-center text-cyan hover:bg-cyan hover:text-bg-bottom transition-colors"
-          aria-label="Settings"
-        >
-          <Settings size={14} />
-        </button>
-      </div>
+        <div className="relative shrink-0">
+          <button
+            ref={settingsButtonRef}
+            onClick={() => setSettingsOpen((v) => !v)}
+            className="h-9 w-9 border border-cyan bg-panel flex items-center justify-center text-cyan hover:bg-cyan hover:text-bg-bottom transition-colors sm:h-8 sm:w-8"
+            aria-label={settingsOpen ? "Close settings" : "Open settings"}
+            aria-expanded={settingsOpen}
+            aria-controls="settings-panel"
+          >
+            <Settings size={14} />
+          </button>
 
-      {/* settings panel */}
-      {settingsOpen && (
-        <div className="absolute right-4 top-12 z-[70] border border-red bg-panel p-3 text-xs space-y-2 chamfer-sm">
-          <label className="flex items-center gap-2 text-text-dim">
-            <input
-              type="checkbox"
-              checked={scanlines}
-              onChange={(e) => setScanlines(e.target.checked)}
-            />
-            SCANLINES
-          </label>
-          <label className="flex items-center gap-2 text-text-dim">
-            <input
-              type="checkbox"
-              checked={glitch}
-              onChange={(e) => setGlitch(e.target.checked)}
-            />
-            GLITCH FX
-          </label>
-          <label className="flex items-center gap-2 text-text-dim">
-            <input
-              type="checkbox"
-              checked={animations}
-              onChange={(e) => {
-                animTouched.current = true;
-                setAnimations(e.target.checked);
-              }}
-            />
-            ANIMATIONS
-          </label>
-          <label className="flex items-center gap-2 text-text-dim">
-            <input type="checkbox" checked={sound} readOnly />
-            SOUND: OFF
-          </label>
+          {/* settings panel */}
+          {settingsOpen && (
+            <div
+              ref={settingsPanelRef}
+              id="settings-panel"
+              role="group"
+              aria-label="Display settings"
+              className="absolute right-0 top-full z-[90] mt-2 w-60 max-w-[calc(100vw-2rem)] border border-red bg-panel p-3 text-xs space-y-2 chamfer-sm"
+            >
+              <label className="flex items-center gap-2 py-1 text-text-dim">
+                <input
+                  type="checkbox"
+                  checked={scanlines}
+                  onChange={(e) => setScanlines(e.target.checked)}
+                />
+                SCANLINES
+              </label>
+              <label className="flex items-center gap-2 py-1 text-text-dim">
+                <input
+                  type="checkbox"
+                  checked={glitch}
+                  onChange={(e) => setGlitch(e.target.checked)}
+                />
+                GLITCH FX
+              </label>
+              <label className="flex items-center gap-2 py-1 text-text-dim">
+                <input
+                  type="checkbox"
+                  checked={animations}
+                  onChange={(e) => {
+                    animTouched.current = true;
+                    setAnimations(e.target.checked);
+                  }}
+                />
+                ANIMATIONS
+              </label>
+              <label className="flex items-center gap-2 py-1 text-text-dim">
+                <input type="checkbox" checked={sound} readOnly />
+                SOUND: OFF
+              </label>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* header panel */}
       <div className="px-4 py-3">
         <div className="border border-red bg-panel/40 chamfer p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 border border-red bg-panel flex items-center justify-center text-cyan font-bold">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="h-10 w-10 shrink-0 border border-red bg-panel flex items-center justify-center text-cyan font-bold">
               H
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="text-cyan font-display font-bold tracking-widest text-lg">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <div className="text-base leading-tight break-words text-cyan font-display font-bold tracking-widest sm:text-lg">
                   HUGO_LEONARDO // SOFTWARE ENGINEER
                 </div>
                 <span
@@ -260,15 +298,36 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* mobile menu button */}
-      <div className="lg:hidden px-4 pb-2">
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="border border-red text-red px-3 py-1.5 text-xs tracking-widest chamfer-sm"
-        >
-          [ MENU ]
-        </button>
-      </div>
+      {/* mobile navigation: show the tabs directly, no drawer */}
+      <nav aria-label="Primary" className="lg:hidden px-4 pb-2">
+        <div className="grid grid-cols-5 gap-1">
+          {menuItems.map((m) => {
+            const Icon = m.icon;
+            const isActive = active(m.href);
+            return (
+              <Link
+                key={m.href}
+                href={m.href}
+                aria-label={m.label}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "relative flex min-h-[44px] flex-col items-center justify-center gap-1 chamfer-sm border px-1 py-2 text-center tracking-widest transition-colors",
+                  isActive
+                    ? "bg-red text-[#1A0A0C] border-red"
+                    : "bg-[#14262C] text-cyan border-cyan-dim active:bg-cyan/10"
+                )}
+              >
+                <Icon
+                  size={15}
+                  strokeWidth={1.75}
+                  className={isActive ? "text-bg-bottom" : "text-cyan"}
+                />
+                <span className="text-[9px] leading-none">{m.short}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
 
       {/* main grid */}
       <div className="flex-1 flex gap-4 px-4 pb-4">
@@ -322,30 +381,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </span>
         <span>© HUGO_LEONARDO</span>
       </footer>
-
-      {/* mobile menu */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-[75] bg-bg-bottom/95 backdrop-blur-md p-4 flex flex-col gap-2">
-          <div className="flex justify-end">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="text-red text-xs tracking-widest"
-            >
-              [ X ]
-            </button>
-          </div>
-          {menuItems.map((m) => (
-            <MenuItem
-              key={m.href}
-              href={m.href}
-              icon={m.icon}
-              label={m.label}
-              subtitle={m.subtitle}
-              active={active(m.href)}
-            />
-          ))}
-        </div>
-      )}
 
       {/* scanlines toggle (disabled on home to keep the screen clean) */}
       {scanlines && !isHome && <div className="scanlines" aria-hidden />}

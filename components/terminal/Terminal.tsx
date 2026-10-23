@@ -96,7 +96,10 @@ export function Terminal() {
         className="max-h-48 overflow-y-auto px-3 py-2 font-mono text-[11px] leading-relaxed space-y-0.5"
       >
         {lines.map((l, i) => (
-          <div key={i} className={l.startsWith(">") ? "text-cyan" : "text-text"}>
+          <div
+            key={i}
+            className={`whitespace-pre-wrap break-words ${l.startsWith(">") ? "text-cyan" : "text-text"}`}
+          >
             {l}
           </div>
         ))}
@@ -109,10 +112,13 @@ export function Terminal() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
-          className="min-w-0 flex-1 bg-transparent text-cyan outline-none caret-cyan placeholder:text-text-dim"
+          className="min-w-0 flex-1 bg-transparent text-base text-cyan outline-none caret-cyan placeholder:text-text-dim md:text-[11px]"
           placeholder="type a command..."
           aria-label="Terminal input"
           autoComplete="off"
+          autoCapitalize="none"
+          autoCorrect="off"
+          enterKeyHint="send"
           spellCheck={false}
         />
         <span className="cursor-blink text-cyan" aria-hidden>█</span>

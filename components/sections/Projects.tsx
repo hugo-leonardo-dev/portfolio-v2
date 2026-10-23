@@ -255,7 +255,7 @@ export default function Projects() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="dossier-title"
-              className="relative w-full max-w-2xl border border-red bg-panel chamfer p-6"
+              className="relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto overscroll-contain border border-red bg-panel chamfer p-4 sm:p-6"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 if (e.key === "Escape") setDossier(null);
@@ -266,7 +266,8 @@ export default function Projects() {
                 <button
                   ref={closeBtnRef}
                   onClick={() => setDossier(null)}
-                  className="text-red text-xs tracking-widest hover:neon-red"
+                  className="-m-2 flex min-h-[44px] min-w-[44px] items-center justify-center p-2 text-red text-xs tracking-widest hover:neon-red"
+                  aria-label="Close dossier"
                 >
                   [ X ]
                 </button>

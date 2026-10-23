@@ -25,7 +25,7 @@ export function ContactForm() {
   };
 
   const inputCls =
-    "mt-1 w-full bg-[rgba(20,38,44,0.9)] border border-cyan-dim px-3 py-2 text-text outline-none focus:border-cyan focus:shadow-[0_0_8px_rgba(95,233,238,0.35)] placeholder:text-text-dim caret-cyan [caret-shape:block]";
+    "mt-1 w-full bg-[rgba(20,38,44,0.9)] border border-cyan-dim px-3 py-2 text-base text-text outline-none focus:border-cyan focus:shadow-[0_0_8px_rgba(95,233,238,0.35)] placeholder:text-text-dim caret-cyan [caret-shape:block] md:text-sm";
 
   return (
     <section className="space-y-6">
@@ -44,6 +44,7 @@ export function ContactForm() {
               </span>
               <input
                 required
+                autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={inputCls}
@@ -61,6 +62,7 @@ export function ContactForm() {
               </span>
               <input
                 required
+                autoComplete="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -135,7 +137,7 @@ export function ContactForm() {
           <span className="text-cyan text-xs tracking-widest">
             CHANNEL STATUS: OPEN
           </span>
-          <SegmentedBar value={100} />
+          <SegmentedBar value={100} ticks={20} />
         </div>
       </HudFrame>
     </section>
