@@ -10,7 +10,6 @@ import { HudFrame } from "@/components/hud/HudFrame";
 import { SegmentedBar } from "@/components/hud/SegmentedBar";
 import { BinaryText } from "@/components/hud/BinaryText";
 import { StatusTag } from "@/components/hud/StatusTag";
-import { ProgressStrip } from "@/components/hud/ProgressStrip";
 import { RotatingTypeWriter } from "@/components/fx/RotatingTypeWriter";
 import { CountUp } from "@/components/fx/CountUp";
 import { ScrambleReveal } from "@/components/fx/ScrambleReveal";
@@ -104,7 +103,6 @@ export default function Home() {
               <div className="text-[10px] text-text-dim tracking-widest hud-glow">
                 LOADING <CountUp to={100} duration={1800} />%
               </div>
-              <ProgressStrip label="SCANNING" duration={1800} />
               <div className="flex flex-wrap justify-center gap-3 mt-4">
                 <motion.div
                   initial={reduced ? false : { opacity: 0, y: 8 }}
