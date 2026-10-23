@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { releaseIntroUi } from "@/lib/intro";
 
 /* ================= CONFIG ================= */
 const INTRO = {
   total: 4500,
-  failsafe: 6000,
+  failsafe: 10000,
   reduced: false,
   steps: [
     // PHASE 1 BOOT
@@ -216,9 +217,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const finish = () => {
     cancelled.current = true;
     timers.current.forEach(clearTimeout);
-    document.documentElement.classList.remove("intro-pending");
-    document.body.style.overflow = "";
-    document.querySelectorAll("[inert]").forEach((el) => el.removeAttribute("inert"));
+    releaseIntroUi();
     window.dispatchEvent(new Event("intro:done"));
     onDone();
   };
@@ -279,6 +278,8 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       window.removeEventListener("keydown", onKey);
       rootRef.current?.removeEventListener("click", onClick);
       clearTimeout(failsafe);
+      // Also runs if a parent unmounts the intro before its normal exit.
+      releaseIntroUi();
     };
   }, []);
 

@@ -384,7 +384,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* scanlines toggle (disabled on home to keep the screen clean) */}
       {scanlines && !isHome && <div className="scanlines" aria-hidden />}
-      {!isHome && <div className="scan-sweep" aria-hidden />}
       {glitch && null}
     </div>
   );

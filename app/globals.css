@@ -466,34 +466,6 @@ a {
   }
 }
 
-/* ambient scan sweep */
-@keyframes scanSweep {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.15;
-  }
-  90% {
-    opacity: 0.15;
-  }
-  100% {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-}
-.scan-sweep {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(to right, transparent, var(--cyan), transparent);
-  z-index: 59;
-  pointer-events: none;
-  animation: scanSweep 6s linear infinite;
-}
-
 /* INTRO OVERLAY */
 .intro-overlay {
   position: fixed;
@@ -843,8 +815,7 @@ html.intro-pending body > *:not(.intro-overlay) {
   html:not(.motion-on) .flicker,
   html:not(.motion-on) .marquee-track,
   html:not(.motion-on) .data-error,
-  html:not(.motion-on) .cursor-blink,
-  html:not(.motion-on) .scan-sweep {
+  html:not(.motion-on) .cursor-blink {
     animation: none;
   }
   html:not(.motion-on) .bar-shimmer,
