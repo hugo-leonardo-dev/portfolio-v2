@@ -264,11 +264,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
     // hex stream is CSS animated; no JS.
 
-    // run script
-    const steps = lite
-      ? INTRO.steps.filter((s) => !["print"].includes(s.type) || true).slice(0, 12)
-      : INTRO.steps;
-    runScript(steps);
+    // Run the complete script on every device. The old "lite" branch sliced
+    // the steps before the handoff step, so phones with <= 4 cores (iOS often
+    // reports 4) got stuck on BYPASSING ICE until the failsafe fired.
+    runScript(INTRO.steps);
 
     return () => {
       cancelled.current = true;
