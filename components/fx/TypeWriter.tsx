@@ -98,24 +98,38 @@ export function TypeWriter({
   };
 
   const shown = reduced ? text : displayed;
-  const cursorNode = (!done || keepCursor) && <span className="cursor-blink text-cyan">{cursor}</span>;
+  const cursorNode = (!done || keepCursor) && (
+    <span className="cursor-blink text-cyan" aria-hidden="true" style={{ display: "inline-block" }}>
+      {cursor}
+    </span>
+  );
 
   if (flow) {
     return (
-      <Tag ref={ref} className={className} onMouseEnter={handleEnter}>
-        {shown}
-        {cursorNode}
+      <Tag ref={ref} className={className} aria-label={text} onMouseEnter={handleEnter}>
+        <span aria-hidden="true">
+          {shown}
+          {cursorNode}
+        </span>
       </Tag>
     );
   }
 
   return (
-    <Tag ref={ref} className={className} style={{ position: "relative", display: "inline-block" }} onMouseEnter={handleEnter}>
-      <span className="sr-only">{text}</span>
-      <span aria-hidden="true" style={{ opacity: 0, pointerEvents: "none", userSelect: "none" }}>
+    <Tag
+      ref={ref}
+      className={className}
+      aria-label={text}
+      style={{ position: "relative", display: "inline-block", whiteSpace: "nowrap" }}
+      onMouseEnter={handleEnter}
+    >
+      {/* Invisible sizer: reserves the final width so the typed overlay never
+          shifts the layout. visibility (not opacity) keeps a global CSS rule
+          from accidentally revealing this copy. */}
+      <span aria-hidden="true" style={{ visibility: "hidden", userSelect: "none" }}>
         {text}
       </span>
-      <span aria-hidden="true" style={{ position: "absolute", inset: 0 }}>
+      <span aria-hidden="true" style={{ position: "absolute", inset: 0, whiteSpace: "nowrap" }}>
         {shown}
         {cursorNode}
       </span>

@@ -35,9 +35,20 @@ export default function Home() {
         return;
       }
       if (document.documentElement.classList.contains("intro-pending")) {
-        const handler = () => setReady(true);
+        let done = false;
+        const handler = () => {
+          done = true;
+          setReady(true);
+        };
         window.addEventListener("intro:done", handler, { once: true });
-        return () => window.removeEventListener("intro:done", handler);
+        // Never leave the hero permanently unmounted if the intro chunk fails.
+        const failsafe = setTimeout(() => {
+          if (!done) setReady(true);
+        }, 7000);
+        return () => {
+          window.removeEventListener("intro:done", handler);
+          clearTimeout(failsafe);
+        };
       }
       setReady(true);
     } catch {

@@ -35,10 +35,11 @@ export function ContactForm() {
             <label className="block">
               <span className="text-cyan tracking-widest text-xs">
                 <TypeWriter
-                  text="> NAME_"
+                  text=">NAME_"
                   speed={10}
                   trigger="inView"
                   keepCursor={false}
+                  flow
                 />
               </span>
               <input
@@ -51,10 +52,11 @@ export function ContactForm() {
             <label className="block">
               <span className="text-cyan tracking-widest text-xs">
                 <TypeWriter
-                  text="> EMAIL_"
+                  text=">EMAIL_"
                   speed={10}
                   trigger="inView"
                   keepCursor={false}
+                  flow
                 />
               </span>
               <input
@@ -68,10 +70,11 @@ export function ContactForm() {
             <label className="block">
               <span className="text-cyan tracking-widest text-xs">
                 <TypeWriter
-                  text="> MESSAGE_"
+                  text=">MESSAGE_"
                   speed={10}
                   trigger="inView"
                   keepCursor={false}
+                  flow
                 />
               </span>
               <textarea
@@ -91,6 +94,7 @@ export function ContactForm() {
                   speed={10}
                   trigger="mount"
                   keepCursor={false}
+                  flow
                 />
               </div>
             )}

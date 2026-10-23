@@ -30,6 +30,7 @@ export function Logs() {
                     text={`${e.id} // ${e.company.toUpperCase()} // ${e.period}`}
                     speed={10}
                     keepCursor={false}
+                    flow
                   />
                 </span>
                 <StatusTag color={isOpen ? "cyan" : "dim"}>
