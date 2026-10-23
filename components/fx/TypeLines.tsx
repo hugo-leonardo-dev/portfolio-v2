@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useTypewriterMotion } from "@/hooks/useTypewriterMotion";
 import { useInView } from "@/hooks/useInView";
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function TypeLines({ lines, prompt = "> ", speed = 28, lineDelay = 250, className }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = useTypewriterMotion();
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.15 });
   const [active, setActive] = useState(0);
   const [displayed, setDisplayed] = useState<string[]>(() => (reduced ? [...lines] : []));

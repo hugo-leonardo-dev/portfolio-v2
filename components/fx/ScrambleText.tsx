@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useTypewriterMotion } from "@/hooks/useTypewriterMotion";
 import { useInView } from "@/hooks/useInView";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&アカサタナハマヤラワ";
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export function ScrambleText({ text, trigger = "inView", duration = 600, delay = 0, className }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = useTypewriterMotion();
   const { ref, inView } = useInView<HTMLSpanElement>({ threshold: 0.2 });
   const [display, setDisplay] = useState(text);
   const ran = useRef(false);

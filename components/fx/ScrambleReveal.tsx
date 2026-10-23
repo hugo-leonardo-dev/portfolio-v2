@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useTypewriterMotion } from "@/hooks/useTypewriterMotion";
 
 const GLYPHS = "#%$01&X";
 
@@ -28,7 +28,7 @@ export function ScrambleReveal({
   className,
   hoverScope = "self",
 }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = useTypewriterMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(text);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);

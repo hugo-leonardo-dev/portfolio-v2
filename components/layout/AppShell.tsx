@@ -67,10 +67,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       const a = localStorage.getItem("anim");
       if (a === "1") setAnimations(true);
       else if (a === "0") setAnimations(false);
-      else
-        setAnimations(
-          !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-        );
+      // Default ON. The OS reduce-motion flag used to switch the whole site
+      // (and every typewriter) off silently on some machines/browsers.
+      else setAnimations(true);
       const s = localStorage.getItem("scanlines");
       if (s !== null) setScanlines(s === "1");
       const g = localStorage.getItem("glitch");

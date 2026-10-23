@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useTypewriterMotion } from "@/hooks/useTypewriterMotion";
 
 type Props = {
   words: string[];
@@ -18,7 +18,7 @@ export function RotatingTypeWriter({
   pause = 2000,
   className,
 }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = useTypewriterMotion();
   const [text, setText] = useState(reduced ? words[0] : "");
   const [cursor, setCursor] = useState(true);
   const idx = useRef(0);

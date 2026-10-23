@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useTypewriterMotion } from "@/hooks/useTypewriterMotion";
 import { useInView } from "@/hooks/useInView";
 
 type Props = {
@@ -34,7 +34,7 @@ export function TypeWriter({
   trigger = "inView",
   flow = false,
 }: Props) {
-  const reduced = useReducedMotion();
+  const reduced = useTypewriterMotion();
   const { ref, inView } = useInView<HTMLSpanElement>({ threshold: 0.15 });
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
